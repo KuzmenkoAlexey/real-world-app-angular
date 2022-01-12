@@ -1,7 +1,9 @@
 def _message
 
 pipeline {
-  agent any
+  agent {
+    docker { image 'alpine/k8s:1.21.2' }
+  }
   options {
     disableConcurrentBuilds()
     timeout(time: 30, unit: 'MINUTES')
@@ -9,7 +11,7 @@ pipeline {
   }
 
   parameters {
-    string(name: '_git_repo', defaultValue: 'git@github.com:KuzmenkoAlexey/real-world-app-angular.git')
+    string(name: '_git_repo', defaultValue: 'https://github.com/KuzmenkoAlexey/real-world-app-angular.git')
     string(name: '_git_branch', defaultValue: 'main' )
   }
 
