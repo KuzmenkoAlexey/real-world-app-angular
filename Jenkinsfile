@@ -1,7 +1,7 @@
 def _message
 
 pipeline {
-
+  agent any
   options {
     disableConcurrentBuilds()
     timeout(time: 30, unit: 'MINUTES')
