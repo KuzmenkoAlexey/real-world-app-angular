@@ -43,7 +43,6 @@ spec:
     string(name: '_git_repo', defaultValue: 'https://github.com/KuzmenkoAlexey/real-world-app-angular.git')
     string(name: '_git_branch', defaultValue: 'main' )
     string(name: '_gcp_repo', defaultValue: 'gcr.io/data-buckeye-288515/angular-frontendapp')
-    string(name: '_google_credentials_id', defaultValue: 'gcp_sa_key')
   }
 
   stages {
@@ -72,7 +71,7 @@ spec:
                     _build_args = """\
                       --network=host \
                     """
-                    withCredentials([file(credentialsId: '${_google_credentials_id}', variable: 'GC_KEY')]) {
+                    withCredentials([file(credentialsId: 'gcp_sa_key', variable: 'GC_KEY')]) {
                         sh("gcloud auth activate-service-account --key-file=${GC_KEY}")
                         sh("gcloud auth configure-docker")
                         def backendImage = docker.build("${_gcp_repo}:${_git_commit}", "${_build_args} .")
