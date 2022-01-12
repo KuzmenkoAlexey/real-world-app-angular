@@ -43,6 +43,9 @@ spec:
     string(name: '_git_repo', defaultValue: 'https://github.com/KuzmenkoAlexey/real-world-app-angular.git')
     string(name: '_git_branch', defaultValue: 'main' )
     string(name: '_gcp_repo', defaultValue: 'gcr.io/data-buckeye-288515/angular-frontendapp')
+    string(name: '_namespace', defaultValue: 'kuzmenko-onboarding')
+    string(name: '_deployment_name', defaultValue: 'frontendapp')
+    string(name: '_container_name', defaultValue: 'frontendapp')
   }
 
   stages {
@@ -85,14 +88,7 @@ spec:
     stage('Deploy') {
         steps {
             container('kctl') {
-//                 withKubeConfig([
-//                   credentialsId: 'ede8d86c-dbd4-4837-aa43-24b4fe852bd7',
-//                   serverUrl: 'https://34.121.97.129',
-//                   clusterName: 'gke_data-buckeye-288515_us-central1-a_kuzmenko-cluster',
-//                   namespace: 'kuzmenko-onboarding'
-//                 ]) {
-                  sh 'kubectl get po -n kuzmenko-onboarding'
-//                 }
+                sh("kubectl -n ${_namespace} set image deployment/${_deployment_name} ${_container_name}=${_gcp_repo}:${_git_commit}")
             }
         }
     }
