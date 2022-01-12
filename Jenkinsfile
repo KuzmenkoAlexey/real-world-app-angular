@@ -43,6 +43,7 @@ spec:
     string(name: '_git_repo', defaultValue: 'https://github.com/KuzmenkoAlexey/real-world-app-angular.git')
     string(name: '_git_branch', defaultValue: 'main' )
     string(name: '_gcp_repo', defaultValue: 'gcr.io/data-buckeye-288515/angular-frontendapp')
+    string(name: '_google_credentials_id', defaultValue: 'gcp_sa_key')
   }
 
   stages {
@@ -71,14 +72,11 @@ spec:
                     _build_args = """\
                       --network=host \
                     """
-                    withCredentials([file(credentialsId: 'gcp_sa_key', variable: 'GC_KEY')]) {
+                    withCredentials([file(credentialsId: '${_google_credentials_id}', variable: 'GC_KEY')]) {
                         sh("gcloud auth activate-service-account --key-file=${GC_KEY}")
-                        sh("gcloud config list")
                         sh("gcloud auth configure-docker")
-    //             docker.withRegistry("${_gcp_repo}") {
                         def backendImage = docker.build("${_gcp_repo}:${_git_commit}", "${_build_args} .")
                         backendImage.push()
-    //             }
                     }
                 }
             }
@@ -88,14 +86,14 @@ spec:
     stage('Deploy') {
         steps {
             container('kctl') {
-                withKubeConfig([
-                  credentialsId: 'ede8d86c-dbd4-4837-aa43-24b4fe852bd7',
-                  serverUrl: 'https://34.121.97.129',
-                  clusterName: 'gke_data-buckeye-288515_us-central1-a_kuzmenko-cluster',
-                  namespace: 'kuzmenko-onboarding'
-                ]) {
+//                 withKubeConfig([
+//                   credentialsId: 'ede8d86c-dbd4-4837-aa43-24b4fe852bd7',
+//                   serverUrl: 'https://34.121.97.129',
+//                   clusterName: 'gke_data-buckeye-288515_us-central1-a_kuzmenko-cluster',
+//                   namespace: 'kuzmenko-onboarding'
+//                 ]) {
                   sh 'kubectl get po -n kuzmenko-onboarding'
-                }
+//                 }
             }
         }
     }
