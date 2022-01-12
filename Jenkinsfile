@@ -2,7 +2,37 @@ def _message
 
 pipeline {
   agent {
-    docker { image 'alpine/k8s:1.21.2' }
+      kubernetes {
+      label 'test-deploy-jenk'
+      defaultContainer 'jnlp'
+      yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+labels:
+  component: ci
+spec:
+  serviceAccountName: jenkins
+  containers:
+  - name: docker
+    image: docker:latest
+    command:
+    - cat
+    tty: true
+    volumeMounts:
+    - mountPath: /var/run/docker.sock
+      name: docker-sock
+  - name: kctl
+    image: alpine/k8s:1.21.2
+    command:
+    - cat
+    tty: true
+  volumes:
+    - name: docker-sock
+      hostPath:
+        path: /var/run/docker.sock
+"""
+    }
   }
   options {
     disableConcurrentBuilds()
@@ -36,6 +66,7 @@ pipeline {
 
     stage('Deploy') {
         steps {
+        container('kctl') {
 //             withKubeConfig([
 //               credentialsId: 'ede8d86c-dbd4-4837-aa43-24b4fe852bd7',
 //               serverUrl: 'https://34.121.97.129',
@@ -44,6 +75,7 @@ pipeline {
 //             ]) {
               sh 'kubectl get namespaces'
 //             }
+        }
         }
     }
   }
