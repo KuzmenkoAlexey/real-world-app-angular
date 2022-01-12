@@ -1,39 +1,6 @@
 def _message
 
 pipeline {
-  agent {
-    kubernetes {
-      label 'frontend-development'
-      defaultContainer 'jnlp'
-      yaml """
-apiVersion: v1
-kind: Pod
-metadata:
-labels:
-  component: ci
-spec:
-  serviceAccountName: jenkins
-  containers:
-  - name: docker
-    image: docker:latest
-    command:
-    - cat
-    tty: true
-    volumeMounts:
-    - mountPath: /var/run/docker.sock
-      name: docker-sock
-  - name: kctl
-    image: alpine/k8s:1.21.2
-    command:
-    - cat
-    tty: true
-  volumes:
-    - name: docker-sock
-      hostPath:
-        path: /var/run/docker.sock
-"""
-    }
-  }
 
   options {
     disableConcurrentBuilds()
@@ -68,7 +35,12 @@ spec:
     stage('Deploy') {
       steps {
         container('kctl') {
-          script {
+        withKubeConfig([
+          credentialsId: 'ede8d86c-dbd4-4837-aa43-24b4fe852bd7',
+          serverUrl: 'https://34.121.97.129',
+          clusterName: 'gke_data-buckeye-288515_us-central1-a_kuzmenko-cluster',
+          namespace: 'kuzmenko-onboarding'
+        ]) {
             sh 'kubectl get namespaces'
           }
         }
