@@ -32,17 +32,15 @@ pipeline {
         }
     }
 
-    node {
-        stage('Deploy') {
-            steps {
-                withKubeConfig([
-                  credentialsId: 'ede8d86c-dbd4-4837-aa43-24b4fe852bd7',
-                  serverUrl: 'https://34.121.97.129',
-                  clusterName: 'gke_data-buckeye-288515_us-central1-a_kuzmenko-cluster',
-                  namespace: 'kuzmenko-onboarding'
-                ]) {
-                  sh 'kubectl get namespaces'
-                }
+    stage('Deploy') {
+        steps {
+            withKubeConfig([
+              credentialsId: 'ede8d86c-dbd4-4837-aa43-24b4fe852bd7',
+              serverUrl: 'https://34.121.97.129',
+              clusterName: 'gke_data-buckeye-288515_us-central1-a_kuzmenko-cluster',
+              namespace: 'kuzmenko-onboarding'
+            ]) {
+              sh 'kubectl get namespaces'
             }
         }
     }
