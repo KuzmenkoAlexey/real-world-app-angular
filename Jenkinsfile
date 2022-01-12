@@ -65,31 +65,33 @@ spec:
     }
 
     stage('Build') {
-    container('docker') {
-          script {
-            _build_args = """\
-              --network=host \
-            """
-//             docker.withRegistry("${_gcp_repo}") {
-              def backendImage = docker.build("${_gcp_repo}:${_git_commit}", "${_build_args} .")
-              backendImage.push()
-//             }
-          }
+        steps {
+            container('docker') {
+                script {
+                    _build_args = """\
+                      --network=host \
+                    """
+    //             docker.withRegistry("${_gcp_repo}") {
+                    def backendImage = docker.build("${_gcp_repo}:${_git_commit}", "${_build_args} .")
+                    backendImage.push()
+    //             }
+                }
+            }
         }
     }
 
     stage('Deploy') {
         steps {
-        container('kctl') {
-            withKubeConfig([
-              credentialsId: 'ede8d86c-dbd4-4837-aa43-24b4fe852bd7',
-              serverUrl: 'https://34.121.97.129',
-              clusterName: 'gke_data-buckeye-288515_us-central1-a_kuzmenko-cluster',
-              namespace: 'kuzmenko-onboarding'
-            ]) {
-              sh 'kubectl get po -n kuzmenko-onboarding'
+            container('kctl') {
+                withKubeConfig([
+                  credentialsId: 'ede8d86c-dbd4-4837-aa43-24b4fe852bd7',
+                  serverUrl: 'https://34.121.97.129',
+                  clusterName: 'gke_data-buckeye-288515_us-central1-a_kuzmenko-cluster',
+                  namespace: 'kuzmenko-onboarding'
+                ]) {
+                  sh 'kubectl get po -n kuzmenko-onboarding'
+                }
             }
-        }
         }
     }
   }
