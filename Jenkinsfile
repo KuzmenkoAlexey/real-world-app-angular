@@ -72,7 +72,7 @@ spec:
               clusterName: 'gke_data-buckeye-288515_us-central1-a_kuzmenko-cluster',
               namespace: 'kuzmenko-onboarding'
             ]) {
-              sh 'kubectl get namespaces'
+              sh 'kubectl get namespaces -n kuzmenko-onboarding'
             }
         }
         }
