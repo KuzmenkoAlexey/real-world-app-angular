@@ -3,8 +3,7 @@ def _message
 pipeline {
   agent {
       kubernetes {
-      label 'test-deploy-jenk'
-      defaultContainer 'jnlp'
+      inheritFrom 'test-deploy-pod'
       yaml """
   serviceAccountName: jenkins-robot
   containers:
