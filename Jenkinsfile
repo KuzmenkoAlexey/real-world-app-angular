@@ -15,7 +15,7 @@ spec:
   serviceAccountName: jenkins-robot
   containers:
   - name: docker
-    image: docker:latest
+    image: docker:20.10.12
     command:
     - cat
     tty: true
