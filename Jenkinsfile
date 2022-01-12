@@ -12,7 +12,7 @@ metadata:
 labels:
   component: ci
 spec:
-  serviceAccountName: jenkins
+  serviceAccountName: jenkins-robot
   containers:
   - name: docker
     image: docker:latest
