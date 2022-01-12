@@ -33,6 +33,28 @@ spec:
 """
     }
   }
+
+  triggers {
+    GenericTrigger(
+     genericVariables: [
+      [key: 'ref', value: '$.ref']
+     ],
+
+     causeString: 'Triggered on $ref',
+
+     token: 'frontend-deploy-ababcd',
+     tokenCredentialId: '',
+
+     printContributedVariables: true,
+     printPostContent: true,
+
+     silentResponse: false,
+
+     regexpFilterText: '$ref',
+     regexpFilterExpression: 'refs/heads/main'
+    )
+  }
+
   options {
     disableConcurrentBuilds()
     timeout(time: 30, unit: 'MINUTES')
