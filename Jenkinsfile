@@ -3,7 +3,6 @@ def _message
 pipeline {
   agent {
       kubernetes {
-      label 'test-deploy-jenk'
       defaultContainer 'jnlp'
       yaml """
 apiVersion: v1
