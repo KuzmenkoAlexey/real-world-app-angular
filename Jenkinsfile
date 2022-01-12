@@ -42,6 +42,7 @@ spec:
   parameters {
     string(name: '_git_repo', defaultValue: 'https://github.com/KuzmenkoAlexey/real-world-app-angular.git')
     string(name: '_git_branch', defaultValue: 'main' )
+    string(name: '_gcp_repo', defaultValue: 'gcr.io/data-buckeye-288515/angular-frontendapp')
   }
 
   stages {
@@ -60,6 +61,20 @@ spec:
               _git_commit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
               echo "Git Commit: ${_git_commit}"
             }
+        }
+    }
+
+    stage('Build') {
+    container('docker') {
+          script {
+            _build_args = """\
+              --network=host \
+            """
+//             docker.withRegistry("${_gcp_repo}") {
+              def backendImage = docker.build("${_gcp_repo}:${_git_commit}", "${_build_args} .")
+              backendImage.push()
+//             }
+          }
         }
     }
 
